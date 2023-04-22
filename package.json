@@ -1,12 +1,12 @@
 {
-  "name": "cordova-plugin-template",
+  "name": "cordova-plugin-timer-beep",
   "version": "1.0.0",
   "cordova": {
-    "id": "cordova-plugin-template",
+    "id": "cordova-plugin-timer-beep",
     "platforms": [
       "android",
-      "ios",
+      "ios"
     ]
   },
-  "description": "A starting point for a Cordova Plugin"
+  "description": "Play timer beep noises natively"
 }
