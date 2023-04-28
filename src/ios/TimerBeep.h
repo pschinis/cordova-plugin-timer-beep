@@ -1,7 +1,7 @@
 #import <Cordova/CDVPlugin.h>
-#import <AVFoundation/AVFoundation.h>
+#import <AudioToolbox/AudioToolbox.h>
 
-@interface TimerBeep : CDVPlugin <AVAudioPlayerDelegate> {
+@interface TimerBeep : CDVPlugin{
 }
 
 // The hooks for our plugin commands

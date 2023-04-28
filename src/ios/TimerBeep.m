@@ -1,12 +1,7 @@
 #import "TimerBeep.h"
+#import "AppDelegate.h"
 
 #import <Cordova/CDVAvailability.h>
-
-@interface TimerBeep () 
-
-  @property (strong, nonatomic) AVAudioPlayer *audioPlayer;
-
-@end
 
 @implementation TimerBeep
 
@@ -14,45 +9,24 @@
 }
 
 - (void)playSingle:(CDVInvokedUrlCommand *)command {
-    [self.commandDelegate runInBackground:^{
-      NSString *soundPath = [[NSBundle mainBundle] pathForResource:@"CDVTimerBeep.bundle/single_beep" ofType:@"mp3"];
-      NSURL *soundURL = [NSURL fileURLWithPath:soundPath];
-
-      NSError *error;
-      self.audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:soundURL error:&error];
-      
-      if (error) {
-          NSLog(@"Error loading sound file: %@", [error localizedDescription]);
-      } else {
-          self.audioPlayer.delegate = self;
-          [self.audioPlayer prepareToPlay];
-          [self.audioPlayer play];
-      }
-    }];
+    [self playSound:@"single_beep"];
 }
 
 - (void)playFinished:(CDVInvokedUrlCommand *)command {
-    [self.commandDelegate runInBackground:^{
-      NSString *soundPath = [[NSBundle mainBundle] pathForResource:@"CDVTimerBeep.bundle/timer_finished" ofType:@"mp3"];
-      NSURL *soundURL = [NSURL fileURLWithPath:soundPath];
-
-      NSError *error;
-      self.audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:soundURL error:&error];
-      
-      if (error) {
-          NSLog(@"Error loading sound file: %@", [error localizedDescription]);
-      } else {
-          self.audioPlayer.delegate = self;
-          [self.audioPlayer prepareToPlay];
-          [self.audioPlayer play];
-      }
-    }];
+    [self playSound:@"timer_finished"];
 }
 
-#pragma mark - AVAudioPlayerDelegate
+- (void)playSound:(NSString *)resourceName {
+    [self.commandDelegate runInBackground:^{
+      NSString *beepString = [NSString stringWithFormat:@"CDVTimerBeep.bundle/%@", resourceName];
 
-- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
-    self.audioPlayer = nil;
+      NSString *soundPath = [[NSBundle mainBundle] pathForResource:beepString ofType:@"mp3"];
+      NSURL *soundURL = [NSURL fileURLWithPath:soundPath];
+
+      SystemSoundID soundID;
+      AudioServicesCreateSystemSoundID((__bridge CFURLRef)soundURL, &soundID);
+      AudioServicesPlayAlertSound(soundID);
+    }];
 }
 
 @end
